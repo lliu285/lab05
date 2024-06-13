@@ -117,7 +117,7 @@ public class HashTable
 		for (int i = 0; i < size; i++) {
 			String value;
 			if (items[i] == null) {
-				value = status[i] + "";
+				value = status[i] + ""; // Note: You can adjust this for the final output, i just did this for testing
 			} else {
 				value = "$" + items[i].getWholeValue() + "." + items[i].getFractionValue();
 			}

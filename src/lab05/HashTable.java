@@ -88,7 +88,7 @@ public class HashTable
 		int newSize = getNextPrime(size * 2);
 		
 		Currency[] newItems = new Currency[newSize];
-		int[] newStatus = new int[newSize];
+		//int[] newStatus = new int[newSize];
 		
 		int index = 0;
 		while (index < size) {

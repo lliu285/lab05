@@ -18,7 +18,7 @@ public class HashTable
 		count = 0;
 		collisions = 0;
 		c1 = 1;
-		c2 = 2;
+		c2 = 1;
 	}
 	
 	public int getSize()
@@ -41,13 +41,87 @@ public class HashTable
 		return (double) count / size;
 	}
 	
-	private int hash(Dollar item)
+	/*
+	public void printItem(int i)
+	{
+		if (items[i] == null) {
+			System.out.println("empty");
+		} else {
+			System.out.println("$" + items[i].getWholeValue() + "." + items[i].getFractionValue());
+		}
+	}
+	*/
+	
+	private int hash(Currency item)
 	{
 		return 2 * item.getWholeValue() 
 				+ 3 * item.getFractionValue();
 	}
 	
-	public boolean insert(Dollar item)
+	private int getNextPrime(int input)
+	{
+		int count;
+		input++;
+		
+		while(true){
+			int l = (int) Math.sqrt(input);
+			count = 0;
+			for(int i = 2; i <= l; i ++) {
+		    	if(input % i == 0)
+		    		count++;
+			}
+			
+			if(count == 0)
+		    	return input;
+			else {
+		    	input++;
+		    }
+		}
+	}
+	
+	/*
+	 * Resize hash to the next prime > size * 2
+	 * old items are reinserted into new array
+	 */
+	private void resize()
+	{
+		int newSize = getNextPrime(size * 2);
+		
+		Currency[] newItems = new Currency[newSize];
+		int[] newStatus = new int[newSize];
+		
+		int index = 0;
+		while (index < size) {
+			if (items[index] != null) {
+				Currency item = items[index];
+				insertHelper(newItems, newStatus, item, newSize);
+			}
+			
+			index++;
+		}
+		
+		items = newItems;
+		status = newStatus;
+		size = newSize;
+	}
+	
+	public void insert(Currency item) {
+		if (getLoadFactor() > 0.75) {
+			resize();
+		}
+		
+		if (insertHelper(items, status, item, size)) {
+			count++;
+		}
+	}
+	
+	/*
+	 * resize when loadFactor > 0.75
+	 * uses quadratic probing algorithm
+	 * c1 = 1
+	 * c2 = 1
+	 */
+	private boolean insertHelper(Currency[] items, int[] status, Currency item, int size)
 	{
 		int value = (2 * item.getWholeValue() 
 					+ 3 * item.getFractionValue());
@@ -60,7 +134,6 @@ public class HashTable
 			if (items[index] == null) {
 				items[index] = item;
 				status[index] = 1;
-				count++;
 				return true;
 			}
 			
@@ -73,7 +146,8 @@ public class HashTable
 		return false;
 	}
 	
-	public boolean remove(Dollar item)
+	/*
+	public boolean remove(Currency item)
 	{
 		int index = hash(item) % size;
 		int i = 0;
@@ -93,8 +167,9 @@ public class HashTable
 		}
 		return false;
 	}
+	*/
 	
-	public int search(Dollar item)
+	public int search(Currency item)
 	{
 		int index = hash(item) % size;
 		int i = 0;
@@ -123,5 +198,10 @@ public class HashTable
 			}
 			System.out.println(i + ": " + value + " ");
 		}
+		
+		System.out.println("Number of loaded items: " + getCount());
+		System.out.println("Load factor: " + getLoadFactor());
+		System.out.println("Number of collisions: " + getCollisions());
+		
 	}
 }

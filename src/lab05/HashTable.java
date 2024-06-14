@@ -128,7 +128,6 @@ public class HashTable
 		int i = 0;
 		int probed = 0;
 		
-		
 		while (probed < size) {
 			if (items[index] == null) {
 				items[index] = item;
@@ -136,13 +135,18 @@ public class HashTable
 				return true;
 			}
 			
-			i++;
-			index = (hash(item) + c1 * i + c2 * i * i) % size;
+			if (i < size) { // quadratic probing
+				i++;
+				index = (hash(item) + c1 * i + c2 * i * i) % size;
+			} else { // linear probing
+				index = (index + 1) % size; 
+			}
+				
 			probed++;
 			collisions++;
 		}
 		
-		return false;
+		return false;	
 	}
 	
 	/*

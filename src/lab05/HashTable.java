@@ -174,20 +174,11 @@ public class HashTable
 	
 	public int search(Currency item)
 	{
-		for (int i = 0; i < size; i++) {
-			if (items[i] != null && items[i].isEqual(item)) {
-				return i;
-			}
-		}
-		
-		return -1;
-		
-		/*
 		int index = hash(item) % size;
 		int i = 0;
 		int probed = 0;
 		
-		while (status[index] != 0 && probed < size) {
+		while (probed < size) {
 			if (items[index] != null && items[index].isEqual(item)) {
 				return index;
 			}
@@ -197,7 +188,7 @@ public class HashTable
 			probed++;
 		}
 		return -1;
-		*/
+		
 	}
 	
 	public void printHash()

@@ -4,7 +4,7 @@ public class HashTable
 {
 	private int size;
 	private Currency[] items;
-	private int[] status;
+	//private int[] status;
 	private int count;
 	private int collisions;
 	private final int c1;
@@ -14,7 +14,7 @@ public class HashTable
 	{
 		this.size = size;
 		items = new Dollar[size];
-		status = new int[size];
+		//status = new int[size];
 		count = 0;
 		collisions = 0;
 		c1 = 1;
@@ -94,14 +94,14 @@ public class HashTable
 		while (index < size) {
 			if (items[index] != null) {
 				Currency item = items[index];
-				insertHelper(newItems, newStatus, item, newSize);
+				insertHelper(newItems, /*newStatus, */item, newSize);
 			}
 			
 			index++;
 		}
 		
 		items = newItems;
-		status = newStatus;
+		//status = newStatus;
 		size = newSize;
 	}
 	
@@ -110,7 +110,7 @@ public class HashTable
 			resize();
 		}
 		
-		if (insertHelper(items, status, item, size)) {
+		if (insertHelper(items/*, status*/, item, size)) {
 			count++;
 		}
 	}
@@ -120,25 +120,24 @@ public class HashTable
 	 * uses quadratic probing algorithm
 	 * c1 = 1
 	 * c2 = 1
+	 * cyclic hashing --> switch from quadratic probe to linear probe
 	 */
-	private boolean insertHelper(Currency[] items, int[] status, Currency item, int size)
+	private boolean insertHelper(Currency[] items, /*int[] status,*/ Currency item, int size)
 	{
-		int value = (2 * item.getWholeValue() 
-					+ 3 * item.getFractionValue());
-		int index = value % size;
-		
+		int index = hash(item) % size;
 		int i = 0;
 		int probed = 0;
+		
 		
 		while (probed < size) {
 			if (items[index] == null) {
 				items[index] = item;
-				status[index] = 1;
+				/*status[index] = 1;*/
 				return true;
 			}
 			
 			i++;
-			index = (value + c1 * i + c2 * i * i) % size;
+			index = (hash(item) + c1 * i + c2 * i * i) % size;
 			probed++;
 			collisions++;
 		}
@@ -171,6 +170,15 @@ public class HashTable
 	
 	public int search(Currency item)
 	{
+		for (int i = 0; i < size; i++) {
+			if (items[i] != null && items[i].isEqual(item)) {
+				return i;
+			}
+		}
+		
+		return -1;
+		
+		/*
 		int index = hash(item) % size;
 		int i = 0;
 		int probed = 0;
@@ -185,6 +193,7 @@ public class HashTable
 			probed++;
 		}
 		return -1;
+		*/
 	}
 	
 	public void printHash()
@@ -192,7 +201,7 @@ public class HashTable
 		for (int i = 0; i < size; i++) {
 			String value;
 			if (items[i] == null) {
-				value = status[i] + ""; // Note: You can adjust this for the final output, i just did this for testing
+				value = "empty"; //status[i] + ""
 			} else {
 				value = "$" + items[i].getWholeValue() + "." + items[i].getFractionValue();
 			}

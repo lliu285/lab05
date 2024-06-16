@@ -47,8 +47,8 @@ public class HashTable
 	
 	private int hash(Currency item)
 	{
-		return 2 * item.getWholeValue() 
-				+ 3 * item.getFractionValue();
+		return 2 * item.getWholeValue() +
+			   3 * item.getFractionValue();
 	}
 	
 	private int getNextPrime(int input)
@@ -121,6 +121,9 @@ public class HashTable
 		int i = 0;
 		int probed = 0;
 		
+		// Note: Cyclic collision occurs when i >= size
+		// (hash(item) + c1 * i + c2 * i^2) % size ==
+		// (hash(item) + c1 * (i+size) + c2 * (i+size)^2) % size
 		while (probed < size) {
 			if (items[index] == null) {
 				items[index] = item;

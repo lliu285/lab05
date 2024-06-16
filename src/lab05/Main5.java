@@ -41,10 +41,10 @@ public class Main5
 	
 		hash.printHash(); 
 	
-	    // Step 6: Then it will ask the user in a loop to enter a Dollar to search for.
-	    // If the Dollar object is found in the hash table, it will print the index
-	    // where found, otherwise it will print 'Invalid Data'. Then it will ask the
-	    // user if they want to check again or end the program.
+		// Step 6: Then it will ask the user in a loop to enter a Dollar to search for.
+		// If the Dollar object is found in the hash table, it will print the index
+		// where found, otherwise it will print 'Invalid Data'. Then it will ask the
+		// user if they want to check again or end the program.
 	
 		Scanner scanner = new Scanner(System.in);
 	    

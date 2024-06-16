@@ -1,10 +1,15 @@
 package lab05;
 
+/*
+ * Lab #5
+ * Names: Lucia Liu, Nithya Ramasubramonian
+ * Due date: 6/16/24
+ * Purpose: The purpose of this lab is to practice implementing a Hash Table through a Dollar modeling scenario.
+ */
 public class HashTable 
 {
 	private int size;
 	private Currency[] items;
-	//private int[] status;
 	private int count;
 	private int collisions;
 	private final int c1;
@@ -14,7 +19,6 @@ public class HashTable
 	{
 		this.size = size;
 		items = new Dollar[size];
-		//status = new int[size];
 		count = 0;
 		collisions = 0;
 		c1 = 1;
@@ -40,17 +44,6 @@ public class HashTable
 	{
 		return (double) count / size;
 	}
-	
-	/*
-	public void printItem(int i)
-	{
-		if (items[i] == null) {
-			System.out.println("empty");
-		} else {
-			System.out.println("$" + items[i].getWholeValue() + "." + items[i].getFractionValue());
-		}
-	}
-	*/
 	
 	private int hash(Currency item)
 	{
@@ -80,49 +73,49 @@ public class HashTable
 	}
 	
 	/*
-	 * Resize hash to the next prime > size * 2
-	 * old items are reinserted into new array
+	 * Resize hash to a size of the next prime that is greater than the current size * 2
+	 * Number of collisions are reset when hash table is resized
 	 */
 	private void resize()
 	{
 		int newSize = getNextPrime(size * 2);
+		collisions = 0;
 		
 		Currency[] newItems = new Currency[newSize];
-		//int[] newStatus = new int[newSize];
 		
 		int index = 0;
 		while (index < size) {
 			if (items[index] != null) {
 				Currency item = items[index];
-				insertHelper(newItems, /*newStatus, */item, newSize);
+				insertHelper(newItems, item, newSize);
 			}
 			
 			index++;
 		}
 		
 		items = newItems;
-		//status = newStatus;
 		size = newSize;
 	}
 	
+	/*
+	 * HashTable automatically resizes when the load factor > 0.75
+	 */
 	public void insert(Currency item) {
 		if (getLoadFactor() > 0.75) {
 			resize();
 		}
 		
-		if (insertHelper(items/*, status*/, item, size)) {
+		if (insertHelper(items, item, size)) {
 			count++;
 		}
 	}
 	
 	/*
-	 * resize when loadFactor > 0.75
-	 * uses quadratic probing algorithm
-	 * c1 = 1
-	 * c2 = 1
-	 * cyclic hashing --> switch from quadratic probe to linear probe
+	 * c1 = 1, c2 = 1
+	 * Uses quadratic probing algorithm by default
+	 * Switches to linear probing if cyclic collision occurs
 	 */
-	private boolean insertHelper(Currency[] items, /*int[] status,*/ Currency item, int size)
+	private boolean insertHelper(Currency[] items, Currency item, int size)
 	{
 		int index = hash(item) % size;
 		int i = 0;
@@ -131,7 +124,6 @@ public class HashTable
 		while (probed < size) {
 			if (items[index] == null) {
 				items[index] = item;
-				/*status[index] = 1;*/
 				return true;
 			}
 			
@@ -150,28 +142,8 @@ public class HashTable
 	}
 	
 	/*
-	public boolean remove(Currency item)
-	{
-		int index = hash(item) % size;
-		int i = 0;
-		int probed = 0;
-		
-		while (status[index] != 0 && probed < size) {
-			if (items[index] != null && items[index].isEqual(item)) {
-				items[index] = null;
-				status[index] = -1;
-				count--;
-				return true;
-			}
-			
-			i++;
-			index = (hash(item) + c1 * i + c2 * i * i) % size;
-			probed++;
-		}
-		return false;
-	}
-	*/
-	
+	 * If there are duplicate Dollars, the first matched index is returned
+	 */
 	public int search(Currency item)
 	{
 		int index = hash(item) % size;
@@ -196,16 +168,15 @@ public class HashTable
 		for (int i = 0; i < size; i++) {
 			String value;
 			if (items[i] == null) {
-				value = "empty"; //status[i] + ""
+				value = "Empty"; 
 			} else {
 				value = "$" + items[i].getWholeValue() + "." + items[i].getFractionValue();
 			}
-			System.out.println(i + ": " + value + " ");
+			System.out.println(i + ": " + value);
 		}
 		
 		System.out.println("Number of loaded items: " + getCount());
 		System.out.println("Load factor: " + getLoadFactor());
-		System.out.println("Number of collisions: " + getCollisions());
-		
+		System.out.println("Number of collisions: " + getCollisions() + "\n");
 	}
 }
